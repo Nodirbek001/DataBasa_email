@@ -10,9 +10,10 @@ import java.util.Set;
 
 @Component
 public class JwtProvider {
-    private  static final long expireTime=1000*60*60;
-    private  static final String secrekeye="hello";
-    public String GenerateToken(String username, Set<Role>roles){
+    private static final long expireTime = 1000 * 60 * 60;
+    private static final String secrekeye = "hello";
+
+    public String GenerateToken(String username, Set<Role> roles) {
         String roles1 = Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
@@ -21,5 +22,19 @@ public class JwtProvider {
                 .signWith(SignatureAlgorithm.HS512, secrekeye)
                 .compact();
         return roles1;
+    }
+
+    public String GmailFromToken(String token) {
+        try {
+            String subject = Jwts
+                    .parser()
+                    .setSigningKey(secrekeye)
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getSubject();
+            return subject;
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

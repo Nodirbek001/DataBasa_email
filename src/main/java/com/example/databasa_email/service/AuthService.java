@@ -11,6 +11,7 @@ import com.example.databasa_email.security.JwtProvider;
 import org.assertj.core.internal.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Role;
+import org.springframework.core.env.Environment;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -35,12 +36,14 @@ public class AuthService implements UserDetailsService {
     RoleRepository roleRepository;
     @Autowired
     JavaMailSender javaMailSender;
-
     @Autowired
     AuthenticationManager authenticationManager;
 
     @Autowired
     JwtProvider jwtProvider;
+
+    @Autowired
+    Environment env;
 
     public ApiResponse register(RegisterDto registerDto) {
         boolean b = userRepository.existsByEmail(registerDto.getEmail());
@@ -67,10 +70,11 @@ public class AuthService implements UserDetailsService {
     public boolean sendEmail(String sendingEmail, String code) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom("suyunovnodir22@gmail.com");
+            message.setFrom(Objects.requireNonNull(env.getProperty("suyunovnodir22@gmail.com")));
             message.setTo(sendingEmail);
             message.setSubject("Tasdiqlash kodi");
             message.setText("<a href='http://localhost:8081/api/auth/verifyEmail?emailCode=" + code + "&email=" + sendingEmail + "'>Tasdiqlang</a>");
+
             javaMailSender.send(message);
             return true;
         } catch (Exception e) {
@@ -100,7 +104,7 @@ public class AuthService implements UserDetailsService {
             String s = jwtProvider.GenerateToken(loginDto.getUsername(), principal.getRoles());
             return new ApiResponse("Token", true, s);
         } catch (BadCredentialsException ignored) {
-return new ApiResponse("Parol yoki login xato", false);
+            return new ApiResponse("Parol yoki login xato", false);
         }
     }
 
