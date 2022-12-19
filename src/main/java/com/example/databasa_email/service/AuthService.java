@@ -8,6 +8,7 @@ import com.example.databasa_email.payload.RegisterDto;
 import com.example.databasa_email.repository.RoleRepository;
 import com.example.databasa_email.repository.UserRepository;
 import com.example.databasa_email.security.JwtProvider;
+import com.google.firebase.FirebaseOptions;
 import org.assertj.core.internal.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Role;
@@ -24,6 +25,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.FileInputStream;
 import java.util.*;
 
 @Service
@@ -106,6 +108,7 @@ public class AuthService implements UserDetailsService {
         } catch (BadCredentialsException ignored) {
             return new ApiResponse("Parol yoki login xato", false);
         }
+        
     }
 
     @Override

@@ -13,16 +13,17 @@ public class JwtProvider {
     private static final long expireTime = 1000 * 60 * 60;
     private static final String secrekeye = "hello";
 
-    public String GenerateToken(String username, Set<Role> roles) {
-        String roles1 = Jwts.builder()
+    public static String GenerateToken(String username, Set<Role> roles) {
+        return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expireTime))
                 .claim("roles", roles)
                 .signWith(SignatureAlgorithm.HS512, secrekeye)
                 .compact();
-        return roles1;
+
     }
+
 
     public String GmailFromToken(String token) {
         try {
